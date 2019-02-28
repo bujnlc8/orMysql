@@ -25,7 +25,7 @@ class User(Model):
 
 class TestOrm(unittest.TestCase):
     def tearDown(self):
-        db.session.do_execute("delete from t.user")
+        db.session.do_execute("delete from tt.user")
 
     def test_orm(self):
         user = User(id_=1, name="linghaihui", create_time=datetime.now())
