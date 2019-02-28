@@ -23,5 +23,5 @@ install:
 script:
   - pwd && python tests/test_orm.py
 
-before_script:
-  - make build -B && make install
+after_script:
+  - make build -B && make install && make test
