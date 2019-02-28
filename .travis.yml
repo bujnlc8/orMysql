@@ -21,7 +21,7 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - pwd && python tests/test_orm.py
+  - python tests/test_orm.py
 
 after_script:
   - make build -B && make install && make test
