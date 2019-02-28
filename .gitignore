@@ -1,0 +1,7 @@
+venv/
+.vscode/
+*.pyc
+dist/
+ormMysql.egg-info/
+build/
+.idea
