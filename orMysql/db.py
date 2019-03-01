@@ -161,26 +161,26 @@ class Pool(object):
         return con
 
 
-MYSQL_CONNECTION_ARGS = {"HHPYM_MYSQL_HOST": str,
-                         "HHPYM_MYSQL_PORT": int,
-                         "HHPYM_MYSQL_USER": str,
-                         "HHPYM_MYSQL_PASSWORD": str,
-                         "HHPYM_MYSQL_DB": str,
-                         "HHPYM_MYSQL_CHARSET": str,
-                         "HHPYM_MYSQL_MAX_POOL_SIZE": int,
-                         "HHPYM_MYSQL_MAX_LIFE_TIME": int,
-                         "HHPYM_MYSQL_TRY_TIMES": int
+MYSQL_CONNECTION_ARGS = {"OR_MYSQL_HOST": str,
+                         "OR_MYSQL_PORT": int,
+                         "OR_MYSQL_USER": str,
+                         "OR_MYSQL_PASSWORD": str,
+                         "OR_MYSQL_DB": str,
+                         "OR_MYSQL_CHARSET": str,
+                         "OR_MYSQL_MAX_POOL_SIZE": int,
+                         "OR_MYSQL_MAX_LIFE_TIME": int,
+                         "OR_MYSQL_TRY_TIMES": int
                          }
 
-MYSQL_CONNECTION_ARGS_TRANS = {"HHPYM_MYSQL_HOST": "host",
-                               "HHPYM_MYSQL_PORT": "port",
-                               "HHPYM_MYSQL_USER": "user",
-                               "HHPYM_MYSQL_PASSWORD": "password",
-                               "HHPYM_MYSQL_DB": "db",
-                               "HHPYM_MYSQL_CHARSET": "charset",
-                               "HHPYM_MYSQL_MAX_POOL_SIZE": "pool_max_size",
-                               "HHPYM_MYSQL_MAX_LIFE_TIME": "max_life_time",
-                               "HHPYM_MYSQL_TRY_TIMES": "try_times"
+MYSQL_CONNECTION_ARGS_TRANS = {"OR_MYSQL_HOST": "host",
+                               "OR_MYSQL_PORT": "port",
+                               "OR_MYSQL_USER": "user",
+                               "OR_MYSQL_PASSWORD": "password",
+                               "OR_MYSQL_DB": "db",
+                               "OR_MYSQL_CHARSET": "charset",
+                               "OR_MYSQL_MAX_POOL_SIZE": "pool_max_size",
+                               "OR_MYSQL_MAX_LIFE_TIME": "max_life_time",
+                               "OR_MYSQL_TRY_TIMES": "try_times"
                                }
 
 
