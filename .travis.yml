@@ -15,7 +15,7 @@ env:
     - OR_MYSQL_TRY_TIMES=3
 
 before_install:
-  - mysql -e 'CREATE DATABASE tt;USE tt; CREATE TABLE `user` (`id` int(11) NOT NULL, `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL, `create_time` datetime, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+  - mysql -e 'CREATE DATABASE tt;USE tt; CREATE TABLE `user` (`id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL, `create_time` datetime, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
 
 install:
   - pip install -r requirements.txt
