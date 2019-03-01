@@ -71,6 +71,15 @@ class FloatFiled(BaseField):
             primary_key=primary_key)
 
 
+class DecimalField(BaseField):
+    def __init__(self, name="", doc="", default=0, primary_key=False):
+        super(DecimalField, self).__init__(
+            name=name,
+            doc=doc,
+            default=default,
+            primary_key=primary_key)
+
+
 class StringFiled(BaseField):
     def __init__(self, name="", doc="", default="", primary_key=False):
         super(StringFiled, self).__init__(
@@ -137,6 +146,47 @@ class DateTimeFiled(BaseField):
         if isinstance(other, datetime):
             other = other.strftime("%Y-%m-%d %H:%M:%S")
         return self.name + ">=" + wrapper_str(other)
-    
+
     def connect_str(self, v):
         return wrapper_str(v.strftime("%Y-%m-%d %H:%M:%S"))
+
+
+class DateFiled(BaseField):
+    def __init__(self, name="", doc="", default="", primary_key=False):
+        super(DateFiled, self).__init__(
+            name=name, doc=doc,
+            default=default,
+            primary_key=primary_key)
+
+    def __eq__(self, other):
+        if isinstance(other, datetime):
+            other = other.strftime("%Y-%m-%d")
+        return self.name + "=" + wrapper_str(other)
+
+    def __ne__(self, other):
+        if isinstance(other, datetime):
+            other = other.strftime("%Y-%m-%d")
+        return self.name + "!=" + wrapper_str(other)
+
+    def __lt__(self, other):
+        if isinstance(other, datetime):
+            other = other.strftime("%Y-%m-%d")
+        return self.name + "<" + wrapper_str(other)
+
+    def __gt__(self, other):
+        if isinstance(other, datetime):
+            other = other.strftime("%Y-%m-%d")
+        return self.name + ">" + wrapper_str(other)
+
+    def __le__(self, other):
+        if isinstance(other, datetime):
+            other = other.strftime("%Y-%m-%d")
+        return self.name + "<=" + wrapper_str(other)
+
+    def __ge__(self, other):
+        if isinstance(other, datetime):
+            other = other.strftime("%Y-%m-%d")
+        return self.name + ">=" + wrapper_str(other)
+
+    def connect_str(self, v):
+        return wrapper_str(v.strftime("%Y-%m-%d"))
