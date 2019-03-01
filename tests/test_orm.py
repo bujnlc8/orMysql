@@ -36,8 +36,15 @@ class TestOrm(unittest.TestCase):
         self.assertEqual(len(result), 1)
 
         result = User.get(1)
-
         assert isinstance(result, User)
+
+        result = User.query.filter(User.name.is_not_null()).all()
+
+        assert len(result) == 1
+
+        result = User.query.filter(User.name.is_null()).all()
+
+        assert  len(result) == 0
 
         try:
             result = User.query.filter(User.id_ == 2).first()

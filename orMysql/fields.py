@@ -47,6 +47,12 @@ class BaseField(object):
 
     def asc(self):
         return self.name + " ASC "
+
+    def is_null(self):
+        return self.name + " IS NULL"
+
+    def is_not_null(self):
+        return self.name + " IS NOT NULL"
     
     def connect_str(self, v):
         """和字符串连接时样子"""
