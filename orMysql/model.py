@@ -102,6 +102,7 @@ class Dict_Mixin(object):
 
 
 class Model(Dict_Mixin):
+    """Model基类"""
     __metaclass__ = MetaModel
 
     def __init__(self, **kwargs):
@@ -116,3 +117,9 @@ class Model(Dict_Mixin):
     @Property
     def query(self):
         return Queryer(self)
+
+    @classmethod
+    def get(cls, id_):
+        if len(cls.__primary_key__) != 1:
+            raise Exception('not support multi primary key')
+        return cls.query.filter(cls.__map__[cls.__db_map__[cls.__primary_key__[0]]]==id_).first()

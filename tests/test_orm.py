@@ -35,6 +35,10 @@ class TestOrm(unittest.TestCase):
         result = User.query.all()
         self.assertEqual(len(result), 1)
 
+        result = User.get(1)
+
+        assert isinstance(result, User)
+
         try:
             result = User.query.filter(User.id_ == 2).first()
         except Exception as e:
@@ -87,7 +91,69 @@ class TestOrm(unittest.TestCase):
 
         assert len(result) == 2 and result[0].id_ == 3
 
-        print "unit test done!!!"
+        print "unit test done !!!"
+
+
+class TestPool(unittest.TestCase):
+
+    def tearDown(self):
+        db.session.do_execute("delete from tt.user")
+
+    def add(cls):
+        db.session.add(User(name="haihui", create_time=datetime.now()))
+
+    def update(cls, user):
+        db.session.update(user, name="haihui")
+
+    def get(cls, id_):
+        obj = User.query.filter(User.id_==id_).first()
+        return obj
+
+    def test_add(self):
+        import threading
+        try_times = 100
+        while try_times > 0:
+            threads = []
+            for x in range(20):
+                threads.append(threading.Thread(target=self.add, args=()))
+            for x in threads:
+                x.start()
+            for x in threads:
+                x.join()
+            try_times -= 1
+        print "test_add done !!!"
+
+    def test_update(self):
+        import threading
+        try_times = 100
+        user = User(id_=1, name="haihui")
+        db.session.add(user)
+        while try_times > 0:
+            threads = []
+            for x in range(20):
+                threads.append(threading.Thread(target=self.update, args=(user, )))
+            for x in threads:
+                x.start()
+            for x in threads:
+                x.join()
+            try_times -= 1
+        print "test_update done !!!"
+
+    def test_get(self):
+        import threading
+        try_times = 100
+        user = User(id_=1, name="haihui")
+        db.session.add(user)
+        while try_times > 0:
+            threads = []
+            for x in range(20):
+                threads.append(threading.Thread(target=self.get, args=(1, )))
+            for x in threads:
+                x.start()
+            for x in threads:
+                x.join()
+            try_times -= 1
+        print "test_get done !!!"
 
 
 if __name__ == "__main__":
