@@ -25,7 +25,7 @@ class User(Model):
         return cls.query.filter(cls.id_==id).first()
 
     def update(self, **kw):
-        self.update(**kw)
+        db.session.update(self, **kw)
 ```
 
 #### 用法说明

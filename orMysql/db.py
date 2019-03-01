@@ -9,20 +9,16 @@ from datetime import datetime, timedelta
 
 from pymysql.connections import Connection
 from pymysql.cursors import DictCursor
-from utils import Property
+
+from utils import Property, wrapper_str
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
-class PutError(Exception):
-    error_no = 5001
-    msg = "放回连接池出错"
-
-    def __repr__(self):
-        return "error_no:{}, msg:{}".format(self.error_no, self.msg)
-
-
 class WrapperConnection(Connection):
+    """
+    the wrapper connection of pymysql.connections.Connection
+    """
     def __init__(self, max_life_time=3600, pool=None, **kwargs):
         self.max_life_time = max_life_time
         self.create_time = datetime.now()
@@ -32,7 +28,7 @@ class WrapperConnection(Connection):
 
     @property
     def is_dead(self):
-        """不检查是否依然保持连接，理论上应该是能保持的"""
+        """check the connection is over time"""
         if datetime.now() >= self.end_time:
             return True
         return False
@@ -42,13 +38,13 @@ class WrapperConnection(Connection):
             if exc is not None:
                 self.rollback()
             self.pool.put(self)
-        except PutError as e:
+        except Exception as e:
             print e
 
     def select(self, sql):
         """
-        查询接口封装
         :param sql : the sql to execute
+        >>> db.session.select(sql)
         """
         with self as cur:
             cur.execute(sql)
@@ -56,31 +52,50 @@ class WrapperConnection(Connection):
             self.commit()
         return result
 
-    def _inner_execute(self, obj, op="save"):
-        """
-        仅限内部调用
-        """
-        with self as cur:
-            result = 0
-            if op == "save":
-                result = cur.execute(obj.save)
-            elif op == "update":
-                result = cur.execute(obj)
-            self.commit()
-            return result
-
     def add(self, obj):
         """
-        保存对象接口封装
         :param obj: the model object to save
+        >>> db.session.add(obj)
         """
-        return self._inner_execute(obj)
+        attr_map = {}
+        for key in obj.keys():
+            try:
+                attr_map[key] = obj.__map__[key]
+            except KeyError as e:
+                msg = "{} has no a filed named {}".format(obj.__tablename__, e)
+                warnings.warn(msg, SyntaxWarning)
+        fileds = []
+        values = []
+        for k, v in attr_map.iteritems():
+            fileds.append(wrapper_str(obj.__map__[k].name, "`"))
+            values.append(v.connect_str(obj[k]))
+        sql = "INSERT INTO %s (%s) VALUES (%s) " % (
+            obj.__tablename__,
+            ",".join(fileds),
+            ",".join(values))
+        return self.do_execute(sql)
 
-    def update(self, sql):
+    def update(self, obj, **kwargs):
         """
-        :param sql: the sql to update
+        :param obj: the obj to update
+        :param kwargs: the updated attr
+        >>> db.session.update(obj, id=100, name="haihui")
         """
-        return self._inner_execute(sql, op="update")
+        updates = []
+        for k, v in kwargs.iteritems():
+            if k in obj.__map__:
+                updates.append(obj.__map__[k].name + "=" + obj.__map__[k].connect_str(v))
+        if not updates:
+            return False
+        sql = "UPDATE %s SET %s WHERE " % (obj.__tablename__, ",".join(updates))
+        # 根据主键设置过滤条件
+        wheres = []
+        for key in obj.__primary_key__:
+            wheres.append(key + "=" + obj.__map__[obj.__db_map__[key]].connect_str(obj[obj.__db_map__[key]]))
+        if not wheres:
+            return 0
+        sql += " AND ".join(wheres)
+        return self.do_execute(sql)
 
     def do_execute(self, sql):
         with self as cur:
@@ -148,10 +163,10 @@ class Pool(object):
             if not connection.is_dead:
                 self.pool.put_nowait(connection)
             else:
-                # 尝试断开连接
+                # try to close
                 connection.close()
         except Exception as e:
-            raise PutError
+            raise Exception("put into pool error happens")
 
     @property
     def session(self):

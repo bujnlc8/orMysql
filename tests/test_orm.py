@@ -80,7 +80,7 @@ class TestOrm(unittest.TestCase):
 
         assert len(result) == 2 and result[0].id_ == 1
 
-        result = user2.update(name="linghaihui", id_=3)
+        result = db.session.update(user2, name="linghaihui", id_=3)
         assert result == 1
 
         result = User.query.filter(User.name == "linghaihui").order_by(User.id_.desc()).all()

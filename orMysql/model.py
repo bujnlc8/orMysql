@@ -55,6 +55,7 @@ class Queryer(object):
     def __repr__(self):
         return self.sql
 
+
 class MetaModel(type):
     def __new__(cls, name, bases, attrs):
         if "__tablename__" not in attrs or not attrs["__tablename__"]:
@@ -115,40 +116,3 @@ class Model(Dict_Mixin):
     @Property
     def query(self):
         return Queryer(self)
-
-    @property
-    def save(self):
-        attr_map = {}
-        for key in self.keys():
-            try:
-                attr_map[key] = self.__map__[key]
-            except KeyError as e:
-                msg = "{} has no a filed named {}".format(self.__tablename__, e)
-                warnings.warn(msg, SyntaxWarning)
-        fileds = []
-        values = []
-        for k, v in attr_map.iteritems():
-            fileds.append(wrapper_str(self.__map__[k].name, "`"))
-            values.append(v.connect_str(self[k]))
-        sql = "INSERT INTO %s (%s) VALUES (%s) " % (
-            self.__tablename__,
-            ",".join(fileds),
-            ",".join(values))
-        return sql
-
-    def update(self, **kwargs):
-        updates = []
-        for k, v in kwargs.iteritems():
-            if k in self.__map__:
-                updates.append(self.__map__[k].name + "=" + self.__map__[k].connect_str(v))
-        if not updates:
-            return False
-        sql = "UPDATE %s SET %s WHERE " % (self.__tablename__, ",".join(updates))
-        # 根据主键设置过滤条件
-        wheres = []
-        for key in self.__primary_key__:
-            wheres.append(key + "=" + self.__map__[self.__db_map__[key]].connect_str(self[self.__db_map__[key]]))
-        if not wheres:
-            return False
-        sql += " AND ".join(wheres)
-        return db.session.update(sql)
