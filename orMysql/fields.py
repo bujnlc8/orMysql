@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from orMysql.utils import wrapper_str
-from datetime import datetime
+from datetime import datetime, date
 
 
 class BaseField(object):
@@ -159,32 +159,32 @@ class DateFiled(BaseField):
             primary_key=primary_key)
 
     def __eq__(self, other):
-        if isinstance(other, datetime):
+        if isinstance(other, date):
             other = other.strftime("%Y-%m-%d")
         return self.name + "=" + wrapper_str(other)
 
     def __ne__(self, other):
-        if isinstance(other, datetime):
+        if isinstance(other, date):
             other = other.strftime("%Y-%m-%d")
         return self.name + "!=" + wrapper_str(other)
 
     def __lt__(self, other):
-        if isinstance(other, datetime):
+        if isinstance(other, date):
             other = other.strftime("%Y-%m-%d")
         return self.name + "<" + wrapper_str(other)
 
     def __gt__(self, other):
-        if isinstance(other, datetime):
+        if isinstance(other, date):
             other = other.strftime("%Y-%m-%d")
         return self.name + ">" + wrapper_str(other)
 
     def __le__(self, other):
-        if isinstance(other, datetime):
+        if isinstance(other, date):
             other = other.strftime("%Y-%m-%d")
         return self.name + "<=" + wrapper_str(other)
 
     def __ge__(self, other):
-        if isinstance(other, datetime):
+        if isinstance(other, date):
             other = other.strftime("%Y-%m-%d")
         return self.name + ">=" + wrapper_str(other)
 
