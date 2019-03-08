@@ -8,7 +8,7 @@ def get_requirements():
         return [line for line in f if line and not line.startswith("#")]
 
 
-setup(name="ormMysql",
+setup(name="orMysql",
     version="0.0.1",
     url="https://github.com/linghaihui/orMysql",
     license="MIT",
